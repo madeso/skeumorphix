@@ -21,12 +21,19 @@ const Editor = (props: React.PropsWithChildren) => {
   </div>;
 }
 
-const EditorBody = (props: React.PropsWithChildren) => {
-  return <div className='editor-body'>
+const EditorBody = (props: {children: React.ReactNode, fractions: number[]}) => {
+  // given
+  // [1, 1] => grid-template-columns: auto 1fr auto 1fr auto;
+  // [1, 1, 1] =>  grid-template-columns: auto 1fr auto 1fr auto 1fr auto;
+  const s = props.fractions.reduce((x,c) => x + `auto ${c}fr `, '') + 'auto';
+  return <div className='editor-body' style={{
+    gridTemplateColumns: s
+  }}>
     {props.children}
-    <Border col={0}/>
-    <Border col={1}/>
-    <Border col={2}/>
+    {
+      /* create a array of fractions + 1 size and make all the borders from it */
+      [...Array(props.fractions.length + 1).keys()].map(x => <Border key={x} col={x}/>)
+    }
   </div>;
 }
 
@@ -231,7 +238,7 @@ const ShipControl = () => <Component color={"teal"} title={
   Custom script to run ship controller update
 </Component>
 
-type TabName = "editor" | "entity" | "particles";
+type TabName = "world" | "entity" | "particles";
 
 const EdTab = (props: {name: TabName, tab: TabName, setTab: (t: TabName) => void}) => {
   const sel = props.name === props.tab;
@@ -252,11 +259,11 @@ function App() {
           Euphoria editor
         </TitleBar>
         <TabBar>
-          <EdTab tab={tab} setTab={setTab} name='editor' />
+          <EdTab tab={tab} setTab={setTab} name='world' />
           <EdTab tab={tab} setTab={setTab} name='entity' />
           <EdTab tab={tab} setTab={setTab} name='particles' />
         </TabBar>
-        <EditorBody>
+        <EditorBody fractions={[1, 1]}>
           <List col={0}>
             <RenderModel />
             <PhysiscsColliderModel />
