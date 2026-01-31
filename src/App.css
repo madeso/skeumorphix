@@ -120,8 +120,8 @@
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: 2em;
+  padding: 10px;
 }
 
 .editor, .body, .title {
@@ -129,13 +129,43 @@
 }
 
 .editor {
-  padding: 10px;
-  margin: 10px;
+  padding: 0px 0px 20px 0px;
+  margin: 0px;
   border: 1px solid black;
 
   background-size:200px 200px,auto;
   border-radius: 10px;
   box-shadow: 0 0 35px 10px #aaa
+}
+
+title-bar {
+  margin: 0;
+  padding: 0;
+}
+
+tab-bar {
+  margin: 0;
+  padding: 0;
+}
+
+.tab {
+  border: 1px solid black;
+  border-bottom: none;
+  border-radius: 10px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 5px 5px 5px 5px;
+  margin: 3px;
+  margin-bottom: 0;
+}
+
+.tab.not-selected {
+  position: relative;
+  bottom: -10px;
+}
+
+.tab.selected {
+  padding-bottom: 15px;
 }
 
 .list {
@@ -156,12 +186,14 @@
   border-right: 1px solid black;
 }
 
-.editor {
-  padding: 0px 30px;
-  margin: 0px;
+.editor-body {
+  margin: 0;
+  padding: 0;
   display: grid;
   grid-template-columns: auto 1fr auto 1fr auto;
   grid-template-rows: 100%;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
 }
 
 .list { grid-row: 1/2; }

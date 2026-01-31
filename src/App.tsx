@@ -18,9 +18,27 @@ const noiseTexture = (name: ColorName, top: number, bottom: number) => {
 const Editor = (props: React.PropsWithChildren) => {
   return <div className='editor' style={noiseTexture("gray", 3, 5)}>
     {props.children}
+  </div>;
+}
+
+const EditorBody = (props: React.PropsWithChildren) => {
+  return <div className='editor-body'>
+    {props.children}
     <Border col={0}/>
     <Border col={1}/>
     <Border col={2}/>
+  </div>;
+}
+
+const TitleBar = (props: React.PropsWithChildren) => {
+  return <div className='title-bar'>
+    {props.children}
+  </div>;
+}
+
+const TabBar = (props: React.PropsWithChildren) => {
+  return <div className='tab-bar'>
+    {props.children}
   </div>;
 }
 
@@ -213,23 +231,42 @@ const ShipControl = () => <Component color={"teal"} title={
   Custom script to run ship controller update
 </Component>
 
+type TabName = "editor" | "entity" | "particles";
+
+const EdTab = (props: {name: TabName, tab: TabName, setTab: (t: TabName) => void}) => {
+  const sel = props.name === props.tab;
+  const bg: ColorName = sel ? "yellow" : "gray";
+  return <button className={`tab ${sel ? 'selected' : 'not-selected'}`} onClick={() => props.setTab(props.name)} style={{
+    backgroundColor: colors[bg][4]
+  }}>{props.name}</button>
+}
+
+
 function App() {
+  const [tab, setTab] = React.useState<TabName>("entity");
   return (
     <>
-      <div>
-        <img src={euphoriaLogo} className="logo" alt="Euphoria logo" />
-      </div>
-
       <Editor>
-        <List col={0}>
-          <RenderModel />
-          <PhysiscsColliderModel />
-          <ShipOrientationModel />
-        </List>
-        <List col={1}>
-          <EnablePhysicsSystem />
-          <ShipControl />
-        </List>
+        <TitleBar>
+          <img src={euphoriaLogo} className="logo" alt="Euphoria logo" />
+          Euphoria editor
+        </TitleBar>
+        <TabBar>
+          <EdTab tab={tab} setTab={setTab} name='editor' />
+          <EdTab tab={tab} setTab={setTab} name='entity' />
+          <EdTab tab={tab} setTab={setTab} name='particles' />
+        </TabBar>
+        <EditorBody>
+          <List col={0}>
+            <RenderModel />
+            <PhysiscsColliderModel />
+            <ShipOrientationModel />
+          </List>
+          <List col={1}>
+            <EnablePhysicsSystem />
+            <ShipControl />
+          </List>
+        </EditorBody>
       </Editor>
     </>
   )
