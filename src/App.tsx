@@ -76,14 +76,13 @@ const Prop = (props: {label: string; children?: React.ReactNode}) => <>
   <div>{props.label}</div>
 </>
 
-const Toggle = () => {
-  const [checked, setChecked] = React.useState(false);
+const Toggle = (props: {checked: boolean, onChange: ()=>void}) => {
   return (
     <label className="rocker-toggle">
       <input
         type="checkbox"
-        checked={checked}
-        onChange={() => setChecked(!checked)}
+        checked={props.checked}
+        onChange={props.onChange}
         style={{ display: 'none' }}
       />
       <span className="rocker-bg">
@@ -145,8 +144,12 @@ const NumberEdit = () => {
   );
 }
 
-const Button = (props: {children: React.ReactNode}) => (
-  <button className="skm-button">{props.children}</button>
+const Button = (props: {pushed: boolean, color: ColorName, children: React.ReactNode, onClick?: () => void}) => (
+  <div className='button-holder'>
+    <button onClick={props.onClick}
+      className={`button ${props.pushed ? 'pushed' : 'default'}`} style={noiseTexture(props.color, 4, 5)}>
+      {props.children}</button>
+  </div>
 );
 
 
@@ -157,23 +160,32 @@ const RenderModel = () => <Component color={"red"} title={
 }>
   <Prop label="Select mesh"></Prop>
 </Component>;
-const PhysiscsColliderModel = () => <Component color={"blue"} title={
+const PhysiscsColliderModel = () => {
+  const [shape, setShape] = React.useState('box');
+  const [inherit, setInherit] = React.useState(false);
+
+  const toggleInherit = () => {
+    setInherit((old) => !old);
+  }
+
+  return <Component color={"blue"} title={
   <>
-    Physics collider (shape icon) <Toggle />
+    Physics collider ({shape}) <Toggle checked={inherit} onChange={toggleInherit}/>
   </>
 }>
   <Prop label="Shape">
-    <Button>Box</Button>
-    <Button>Sphere</Button>
-    <Button>Capsule</Button>
+    <Button color="gray" onClick={() => {setShape('box');}} pushed={shape==='box'}>Box</Button>
+    <Button color="gray" onClick={() => {setShape('sphere');}} pushed={shape==='sphere'}>Sphere</Button>
+    <Button color="gray" onClick={() => {setShape('capsule');}} pushed={shape==='capsule'}>Capsule</Button>
   </Prop>
-  <Prop label="Inherit from render model"><Toggle /></Prop>
+  <Prop label="Inherit from render model"><Toggle checked={inherit} onChange={toggleInherit}/></Prop>
   <Prop label="Size">
     <NumberEdit />
     <NumberEdit />
     <NumberEdit />
   </Prop>
 </Component>;
+}
 const ShipOrientationModel = () => <Component color={"grape"} title={
   <>
     Ship Orientation

@@ -1,33 +1,29 @@
-.skm-button {
-  background: linear-gradient(180deg, #f5f3e7 0%, #e0dac0 100%);
-  border: 2px solid #b8b49c;
-  border-radius: 10px;
-  box-shadow:
-    0 2px 8px #b8b49c66,
-    0 1.5px 0 #fff inset,
-    0 -2px 6px #b8b49c inset;
-  color: #5a4d2e;
-  font-family: 'Segoe UI', 'Arial', sans-serif;
-  font-size: 1em;
-  padding: 0.5em 1.2em;
+.button-holder {
+  background-color: #000;
+  display: inline-block;
   margin: 0.2em 0.4em;
+  border: 2px solid transparent;
+  border-radius: 3px;
+}
+.button {
+  padding: 0.5em 1.2em;
+  font-size: 1em;
   cursor: pointer;
-  transition: box-shadow 0.1s, background 0.1s;
-  outline: none;
-  position: relative;
-  text-shadow: 0 1px 0 #fff8, 0 0.5px 0 #fff8;
+  border-radius: 3px;
+  background-color: var(--top);
+  --button-shadow: inset 0 1px 1px rgb(255 255 255 / 92.8%), inset 0 -1px 1px rgb(0 0 0 / 83.3%), var(--top);
 }
-.skm-button:active {
-  background: linear-gradient(180deg, #e0dac0 0%, #f5f3e7 100%);
-  box-shadow:
-    0 1px 2px #b8b49c99,
-    0 1.5px 0 #fff inset,
-    0 -2px 6px #b8b49c inset;
+
+.button, .button:hover {
+  border: none;
 }
-.skm-button:focus {
-  border-color: #a89c6c;
-  box-shadow: 0 0 0 2px #e0dac088, 0 2px 8px #b8b49c66;
+
+.button.pushed {
+  box-shadow: inset 0 1px 5px #000000e2;
+  background-color: var(--bottom);
+  translate: 0 1px;
 }
+
 .led-stepper {
   background: #ddd;
   color: #333;
