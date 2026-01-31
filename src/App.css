@@ -220,3 +220,13 @@ tab-bar {
   border-bottom: 1px solid black;
   border-radius: 0px 0px 6px 6px;
 }
+
+.scene-view {
+  background-color: black;
+}
+
+.scene-view#model {
+  background-image: url(./assets/model.png);
+  background-repeat: repeat;
+  background-size: cover;
+}

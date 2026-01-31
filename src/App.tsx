@@ -25,7 +25,8 @@ const EditorBody = (props: {children: React.ReactNode, fractions: number[]}) => 
   // given
   // [1, 1] => grid-template-columns: auto 1fr auto 1fr auto;
   // [1, 1, 1] =>  grid-template-columns: auto 1fr auto 1fr auto 1fr auto;
-  const s = props.fractions.reduce((x,c) => x + `auto ${c}fr `, '') + 'auto';
+  const fr = (num: number) => num > 0 ? `${num}fr` : 'auto';
+  const s = props.fractions.reduce((x,c) => x + `auto ${fr(c)} `, '') + 'auto';
   return <div className='editor-body' style={{
     gridTemplateColumns: s
   }}>
@@ -55,6 +56,14 @@ const Border = (props: {col: number}) => {
     gridColumnStart: col,
     gridColumnEnd: col+1
   }}/>;
+}
+
+const Scene = (props: {id: string, col: number}) => {
+  const col = 2 + 2*props.col;
+  return <div className="scene-view" id={props.id} style={{
+    gridColumnStart: col,
+    gridColumnEnd: col+1
+  }}/>
 }
 
 const List = (props: {children: React.ReactNode, col: number}) => {
@@ -263,16 +272,17 @@ function App() {
           <EdTab tab={tab} setTab={setTab} name='entity' />
           <EdTab tab={tab} setTab={setTab} name='particles' />
         </TabBar>
-        <EditorBody fractions={[1, 1]}>
-          <List col={0}>
+        <EditorBody fractions={[1, 1, 1]}>
+          <List col={2}>
+            <EnablePhysicsSystem />
+            <ShipControl />
+          </List>
+          <List col={1}>
             <RenderModel />
             <PhysiscsColliderModel />
             <ShipOrientationModel />
           </List>
-          <List col={1}>
-            <EnablePhysicsSystem />
-            <ShipControl />
-          </List>
+          <Scene id="model" col={0} />
         </EditorBody>
       </Editor>
     </>
