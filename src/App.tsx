@@ -95,49 +95,39 @@ const Toggle = (props: {checked: boolean, onChange: ()=>void}) => {
 const NumberEdit = () => {
   const inputWidget = React.useRef<HTMLInputElement>(null);
   const [value, setValue] = React.useState(0);
-  const step = 1;
-  const [editing, setEditing] = React.useState(false);
   return (
     <span className="led-number-edit">
-      <span className="led-display" onClick={() => {
-        setEditing((last) => {
-          const next = !last;
-          if(next && inputWidget.current) {
-            inputWidget.current.focus();
-            inputWidget.current.select();
-            return next;
-          }
-          return last;
-        });
-      }}>
-        {!editing && String(value).padStart(3, '0')}
+      <span className="led-display">
         <input
           ref={inputWidget}
-          width={editing?undefined:0}
-          height={editing?undefined:0}
-          type={editing ? "text" : "hidden"}
+          type="text"
           value={value}
           onChange={e => setValue(Number(e.target.value))}
           className="led-input"
-          onBlur={() => {
-            setEditing(false);
+          onSelect={() => {
+            if(inputWidget.current) {
+              inputWidget.current.select();
+            }
           }}
         />
+      </span>
+    </span>
+  );
+}
+
+
+const FileBrowser = () => {
+  const value = "~/assets/file.ext";
+  return (
+    <span className="led-number-edit">
+      <span className="led-display">
+        {value}
         <button
           className="led-stepper led-stepper-inc"
           type="button"
-          onClick={e => { e.stopPropagation(); setValue(v => v + step); }}
-          aria-label="increment"
+          aria-label="browse file"
         >
-          +
-        </button>
-        <button
-          className="led-stepper led-stepper-dec"
-          type="button"
-          onClick={e => { e.stopPropagation(); setValue(v => v - step); }}
-          aria-label="decrement"
-        >
-          –
+          ...
         </button>
       </span>
     </span>
@@ -155,10 +145,12 @@ const Button = (props: {pushed: boolean, color: ColorName, children: React.React
 
 const RenderModel = () => <Component color={"red"} title={
   <>
-    Render model
+    Mesh
   </>
 }>
-  <Prop label="Select mesh"></Prop>
+  <Prop label='File'>
+      <FileBrowser />
+    </Prop>
 </Component>;
 const PhysiscsColliderModel = () => {
   const [shape, setShape] = React.useState('box');
