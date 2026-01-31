@@ -18,17 +18,29 @@ const noiseTexture = (name: ColorName, top: number, bottom: number) => {
 const Editor = (props: React.PropsWithChildren) => {
   return <div className='editor' style={noiseTexture("gray", 3, 5)}>
     {props.children}
-    <Border id="a"/>
-    <Border id="b"/>
-    <Border id="c"/>
+    <Border col={0}/>
+    <Border col={1}/>
+    <Border col={2}/>
   </div>;
 }
 
-const Border = (props: {id: string}) => <div id={props.id} className='border'/>
+const Border = (props: {col: number}) => {
+  const col = props.col * 2 + 1;
+  return <div className='border' style={{
+    gridColumnStart: col,
+    gridColumnEnd: col+1
+  }}/>;
+}
 
-const ComponentList = (props: React.PropsWithChildren) => <div className='component-list'>
-  {props.children}
-</div>;
+const List = (props: {children: React.ReactNode, col: number}) => {
+  const col = 2 + 2*props.col;
+  return <div className='list' style={{
+    gridColumnStart: col,
+    gridColumnEnd: col+1
+  }}>
+    {props.children}
+  </div>;
+}
 
 const Component = (props: {
   color: ColorName;
@@ -47,10 +59,6 @@ const Component = (props: {
     </Body>
   </div>;
 };
-
-const SystemList = (props: React.PropsWithChildren) => <div className='system-list'>
-  {props.children}
-</div>;
 
 const Title = (props: {
   color: ColorName;
@@ -213,15 +221,15 @@ function App() {
       </div>
 
       <Editor>
-        <ComponentList>
+        <List col={0}>
           <RenderModel />
           <PhysiscsColliderModel />
           <ShipOrientationModel />
-        </ComponentList>
-        <SystemList>
+        </List>
+        <List col={1}>
           <EnablePhysicsSystem />
           <ShipControl />
-        </SystemList>
+        </List>
       </Editor>
     </>
   )

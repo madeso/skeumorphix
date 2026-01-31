@@ -138,7 +138,7 @@
   box-shadow: 0 0 35px 10px #aaa
 }
 
-.component-list, .system-list {
+.list {
   padding: 0;
   margin: 0;
 }
@@ -164,12 +164,7 @@
   grid-template-rows: 100%;
 }
 
-.component-list, .system-list { grid-row: 1/2; }
-#a { grid-column: 1/2; }
-.component-list { grid-column: 2/3; }
-#b { grid-column: 3/4; }
-.system-list { grid-column: 4/5; }
-#c { grid-column: 5/6; }
+.list { grid-row: 1/2; }
 
 .component {
   padding: 0;
