@@ -346,15 +346,24 @@ function App() {
 
 
         {tab === 'world' && 
-        <EditorBody fractions={[1, 2]}>
+        <EditorBody fractions={[1, 2, 1]}>
           <List col={0}>
             <ListerPanel />
           </List>
           <Scene id="world" col={1} />
+          <List col={2}>
+            <Component color="pink" title="Properties">
+              Key value list for selected entity, panel or dialog?
+            </Component>
+
+            <Component color="teal" title="Scripting">
+              Should this be here or a full screen?
+            </Component>
+          </List>
         </EditorBody>}
 
         {tab === 'entity' && 
-        <EditorBody fractions={[1, 1, 1]}>
+        <EditorBody fractions={[1, -1, -1]}>
           <List col={2}>
             <EnablePhysicsSystem />
             <ShipControl />

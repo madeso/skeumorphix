@@ -113,7 +113,6 @@
 
 
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: left;
@@ -125,6 +124,7 @@
 }
 
 .editor, .body, .title {
+  background-size:200px 200px,auto;
    background-image: url(./assets/noise.svg), linear-gradient(to bottom in oklab, var(--top), var(--bottom));
 }
 
@@ -133,13 +133,12 @@
   margin: 0px;
   border: 1px solid black;
 
-  background-size:200px 200px,auto;
   border-radius: 10px;
   box-shadow: 0 0 35px 10px #aaa;
   
-  width: 90vw;
+  width: 95vw;
   height: 36vw;
-  max-width: 1180px;
+  max-width: 1400px;
 
   display: grid;
   grid-template-columns: 1fr;
@@ -181,6 +180,8 @@ tab-bar {
 .list {
   padding: 0;
   margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .border {
