@@ -263,9 +263,7 @@ const ShipControl = () => <Component color={"teal"} title={
   Custom script to run ship controller update
 </Component>
 
-type TabName = "world" | "entity" | "particles";
-
-const EdTab = (props: {name: TabName, tab: TabName, setTab: (t: TabName) => void}) => {
+function EdTab<TabName extends React.ReactNode>(props: {name: TabName, tab: TabName, setTab: (t: TabName) => void}){
   const sel = props.name === props.tab;
   const bg: ColorName = sel ? "yellow" : "gray";
   return <button className={`tab ${sel ? 'selected' : 'not-selected'}`} onClick={() => props.setTab(props.name)} style={{
@@ -329,8 +327,11 @@ const ListerPanel = () => {
   </>;
 }
 
+type TabName = "world" | "entity" | "particles";
+type SecTabName = "world" | "local";
 function App() {
   const [tab, setTab] = React.useState<TabName>("entity");
+  const [secTab, setSecTab] = React.useState<SecTabName>("world");
   return (
     <>
       <Editor>
@@ -342,6 +343,11 @@ function App() {
           <EdTab tab={tab} setTab={setTab} name='world' />
           <EdTab tab={tab} setTab={setTab} name='entity' />
           <EdTab tab={tab} setTab={setTab} name='particles' />
+
+          {tab === 'entity' && <div className='tab-right'>
+            <EdTab tab={secTab} setTab={setSecTab} name='world' />
+            <EdTab tab={secTab} setTab={setSecTab} name='local' />
+          </div>}
         </TabBar>
 
 
@@ -365,8 +371,15 @@ function App() {
         {tab === 'entity' && 
         <EditorBody fractions={[1, -1, -1]}>
           <List col={2}>
-            <EnablePhysicsSystem />
-            <ShipControl />
+            {secTab === 'local' && <>
+              <EnablePhysicsSystem />
+              <ShipControl />
+            </>}
+            {secTab === 'world' && <>
+              <Component color='red' title='Global system'>
+                Should the global system setup be here?
+              </Component>
+            </>}
           </List>
           <List col={1}>
             <RenderModel />

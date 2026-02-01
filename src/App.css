@@ -145,14 +145,20 @@
   grid-template-rows: auto auto 1fr;
 }
 
-title-bar {
+.title-bar {
   margin: 0;
   padding: 0;
 }
 
-tab-bar {
+.tab-bar {
   margin: 0;
   padding: 0;
+  padding-left: 30px;
+}
+
+.tab-bar .tab-right {
+  float: right;
+  padding-right: 30px
 }
 
 .tab {
