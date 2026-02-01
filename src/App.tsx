@@ -314,6 +314,17 @@ const ListerPanel = () => {
     </Component>
 
     <Component color="grape" title="Items">
+      <select className="lister-items" name="items" size={5} style={noiseTexture("blue", 3, 1)}>
+        <option>entity 2b8941ef</option>
+        <option>entity 12cd0d3a</option>
+        <option>entity e6a0dc45</option>
+        <option>entity 36378c6f</option>
+        <option>entity 9f3cbe79</option>
+        <option>entity 78b6c5c4</option>
+        <option>entity 31ce0a54</option>
+        <option>entity c1b7a470</option>
+      </select>
+
     </Component>
   </>;
 }

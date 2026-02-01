@@ -249,3 +249,23 @@ tab-bar {
   margin-left: 10px;
   font-size: 1.5em;
 }
+
+select.lister-items {
+  width: 100%;
+  font-family: 'Share Tech Mono', 'Consolas', monospace;
+  color: black;
+  margin: 0px;
+  padding: 9;
+  appearance: base-select;
+  background-color: var(--bottom);
+}
+select.lister-items option {
+  color: black;
+}
+
+select.lister-items option:checked
+{
+  background-color: var(--top);
+  color: black !important;
+  background: var(--top) linear-gradient(0deg, var(--top) 0%, var(--top) 100%);
+}
