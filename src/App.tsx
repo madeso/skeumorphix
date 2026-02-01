@@ -76,12 +76,28 @@ const List = (props: {children: React.ReactNode, col: number}) => {
   </div>;
 }
 
+const Collapsible = (props: {title: string, color: ColorName, children?: React.ReactNode}) => {
+  const [expanded, setExpanded] = React.useState(false);
+
+  return <div className='component'>
+    <Title color={props.color} expanded={expanded} toggleExpanded={() => {
+      setExpanded(prev => !prev);
+    }}>
+      {props.title}
+    </Title>
+    <Body color={props.color}>
+      {expanded && props.children}
+    </Body>
+  </div>;
+}
+
 const Component = (props: {
   color: ColorName;
   title?: React.ReactNode | undefined;
   children?: React.ReactNode | undefined;
+  collapsed?: boolean;
 }) => {
-  const [expanded, setExpanded] = React.useState(true);
+  const [expanded, setExpanded] = React.useState(!props.collapsed);
   return <div className='component'>
     <Title color={props.color} expanded={expanded} toggleExpanded={() => {
       setExpanded(prev => !prev);
@@ -258,6 +274,50 @@ const EdTab = (props: {name: TabName, tab: TabName, setTab: (t: TabName) => void
 }
 
 
+interface Lister {
+  name: string;
+  short: string;
+}
+
+const listers : Lister[] = [
+  {
+    name: "Layers",
+    short: "lay"
+  },
+  {
+    name: "Groups",
+    short: "grp"
+  },
+  {
+    name: "Flat selected",
+    short: "fsl"
+  },
+  {
+    name: "Selection",
+    short: "sel"
+  },
+]
+
+const ListerPanel = () => {
+  const [state, setState] = React.useState(0);
+  const title = <>
+    <h1>{listers[state].name}</h1>
+    {listers.map((x, index) => <Button key={index} color="gray" pushed={state===index} onClick={() => setState(index)}>{x.short}</Button>)}
+  </>;
+  return <>
+    <Component color="lime" title={title} collapsed>
+      <Collapsible color='gray' title='Display'/>
+      <Collapsible color='gray' title='Included types'/>
+      <Collapsible color='gray' title='Spatial filters'/>
+      <Collapsible color='gray' title='Param filters and operations'/>
+      <Collapsible color='gray' title='Visors'/>
+    </Component>
+
+    <Component color="grape" title="Items">
+    </Component>
+  </>;
+}
+
 function App() {
   const [tab, setTab] = React.useState<TabName>("entity");
   return (
@@ -277,7 +337,7 @@ function App() {
         {tab === 'world' && 
         <EditorBody fractions={[1, 2]}>
           <List col={0}>
-            <Component color="lime" title="lister panel"/>
+            <ListerPanel />
           </List>
           <Scene id="world" col={1} />
         </EditorBody>}

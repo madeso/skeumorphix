@@ -242,3 +242,10 @@ tab-bar {
 .scene-view#world {
   background-image: url(./assets/world.png);
 }
+
+.title h1 {
+  padding: 0px;
+  margin: 0px;
+  margin-left: 10px;
+  font-size: 1.5em;
+}
