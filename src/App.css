@@ -135,7 +135,15 @@
 
   background-size:200px 200px,auto;
   border-radius: 10px;
-  box-shadow: 0 0 35px 10px #aaa
+  box-shadow: 0 0 35px 10px #aaa;
+  
+  width: 90vw;
+  height: 36vw;
+  max-width: 1180px;
+
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto 1fr;
 }
 
 title-bar {
@@ -223,10 +231,14 @@ tab-bar {
 
 .scene-view {
   background-color: black;
+  background-repeat: repeat;
+  background-size: cover;
 }
 
 .scene-view#model {
   background-image: url(./assets/model.png);
-  background-repeat: repeat;
-  background-size: cover;
+  
+}
+.scene-view#world {
+  background-image: url(./assets/world.png);
 }

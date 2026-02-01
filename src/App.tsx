@@ -272,6 +272,17 @@ function App() {
           <EdTab tab={tab} setTab={setTab} name='entity' />
           <EdTab tab={tab} setTab={setTab} name='particles' />
         </TabBar>
+
+
+        {tab === 'world' && 
+        <EditorBody fractions={[1, 2]}>
+          <List col={0}>
+            <Component color="lime" title="lister panel"/>
+          </List>
+          <Scene id="world" col={1} />
+        </EditorBody>}
+
+        {tab === 'entity' && 
         <EditorBody fractions={[1, 1, 1]}>
           <List col={2}>
             <EnablePhysicsSystem />
@@ -283,7 +294,20 @@ function App() {
             <ShipOrientationModel />
           </List>
           <Scene id="model" col={0} />
-        </EditorBody>
+        </EditorBody>}
+
+        {tab === 'particles' && 
+        <EditorBody fractions={[1, 2]}>
+          <List col={0}>
+            <Component color="lime" title="Emitter"/>
+            <Component color="grape" title="Update 1"/>
+            <Component color="orange" title="Update 2"/>
+            <Component color="teal" title="Update 3"/>
+            <Component color="violet" title="Renderer"/>
+          </List>
+          <Scene id="model" col={1} />
+        </EditorBody>}
+
       </Editor>
     </>
   )
