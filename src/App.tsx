@@ -392,11 +392,11 @@ function App() {
         {tab === 'particles' && 
         <EditorBody fractions={[1, 2]}>
           <List col={0}>
-            <Component color="lime" title="Emitter"/>
-            <Component color="grape" title="Update 1"/>
+            <Component color="lime" title="Emission"/>
+            <Component color="grape" title="Motion 1"/>
             <Component color="orange" title="Update 2"/>
             <Component color="teal" title="Update 3"/>
-            <Component color="violet" title="Renderer"/>
+            <Component color="violet" title="Appearance"/>
           </List>
           <Scene id="model" col={1} />
         </EditorBody>}
