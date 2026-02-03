@@ -21,7 +21,7 @@ const Editor = (props: React.PropsWithChildren) => {
   </div>;
 }
 
-const EditorBody = (props: {children: React.ReactNode, fractions: number[]}) => {
+const EditorBody = (props: {children: React.ReactNode, fractions: number[], onEnter?: (index: number, ev : React.MouseEvent<HTMLDivElement>) => void, onLeave?: (index: number, ev : React.MouseEvent<HTMLDivElement>) => void}) => {
   // given
   // [1, 1] => grid-template-columns: auto 1fr auto 1fr auto;
   // [1, 1, 1] =>  grid-template-columns: auto 1fr auto 1fr auto 1fr auto;
@@ -33,7 +33,11 @@ const EditorBody = (props: {children: React.ReactNode, fractions: number[]}) => 
     {props.children}
     {
       /* create a array of fractions + 1 size and make all the borders from it */
-      [...Array(props.fractions.length + 1).keys()].map(x => <Border key={x} col={x}/>)
+      [...Array(props.fractions.length + 1).keys()].map((x, index) => {
+        const onEnter = props.onEnter ? (ev: React.MouseEvent<HTMLDivElement>) => { props.onEnter?.(index, ev); } : undefined;
+        const onLeave = props.onEnter ? (ev: React.MouseEvent<HTMLDivElement>) => { props.onLeave?.(index, ev); } : undefined;
+        return <Border key={x} col={x} onEnter={onEnter} onLeave={onLeave}/>
+      })
     }
   </div>;
 }
@@ -50,9 +54,9 @@ const TabBar = (props: React.PropsWithChildren) => {
   </div>;
 }
 
-const Border = (props: {col: number}) => {
+const Border = (props: {col: number, onEnter?: (ev : React.MouseEvent<HTMLDivElement>) => void, onLeave?: (ev : React.MouseEvent<HTMLDivElement>) => void}) => {
   const col = props.col * 2 + 1;
-  return <div className='border' style={{
+  return <div className='border' onMouseEnter={props.onEnter} onMouseLeave={props.onLeave} style={{
     gridColumnStart: col,
     gridColumnEnd: col+1
   }}/>;
@@ -66,9 +70,9 @@ const Scene = (props: {id: string, col: number}) => {
   }}/>
 }
 
-const List = (props: {children: React.ReactNode, col: number}) => {
+const List = (props: {children?: React.ReactNode, col: number, onLeave?: () => void}) => {
   const col = 2 + 2*props.col;
-  return <div className='list' style={{
+  return <div className='list' onMouseLeave={props.onLeave} style={{
     gridColumnStart: col,
     gridColumnEnd: col+1
   }}>
@@ -329,6 +333,50 @@ const ListerPanel = () => {
 
 type TabName = "world" | "entity" | "particles";
 type SecTabName = "world" | "local";
+
+const EntityMode = ({secTab}: {secTab: SecTabName}) => {
+  const [hovering, setHovering] = React.useState(false);
+
+  const base = hovering ? 1 : 0;
+  const tbase = hovering ? [0.5] : [];
+
+  return <EditorBody fractions={[...tbase, 1, -1, 0.4]} onLeave={(x, ev) => {
+    if(x !== 0) return;
+    const isLeft = ev.clientX <= ev.currentTarget?.offsetLeft;
+    if(isLeft) {
+      setHovering(false);
+    }
+  }} onEnter={x => {
+    if(x !== 0) return;
+    setHovering(true);
+  }}>
+    {hovering && <>
+      <List col={0} onLeave={() => {
+        setHovering(false);
+      }}>
+        <Component color='orange' title='Entity hiearchy'/>
+      </List>
+    </>}
+    <Scene id="model" col={base + 0} />
+    <List col={base + 1}>
+      <RenderModel />
+      <PhysiscsColliderModel />
+      <ShipOrientationModel />
+    </List>
+    <List col={base + 2}>
+      {secTab === 'local' && <>
+        <EnablePhysicsSystem />
+        <ShipControl />
+      </>}
+      {secTab === 'world' && <>
+        <Component color='red' title='Global system'>
+          Should the global system setup be here?
+        </Component>
+      </>}
+    </List>
+  </EditorBody>;
+}
+
 function App() {
   const [tab, setTab] = React.useState<TabName>("entity");
   const [secTab, setSecTab] = React.useState<SecTabName>("world");
@@ -369,25 +417,7 @@ function App() {
         </EditorBody>}
 
         {tab === 'entity' && 
-        <EditorBody fractions={[1, -1, -1]}>
-          <List col={2}>
-            {secTab === 'local' && <>
-              <EnablePhysicsSystem />
-              <ShipControl />
-            </>}
-            {secTab === 'world' && <>
-              <Component color='red' title='Global system'>
-                Should the global system setup be here?
-              </Component>
-            </>}
-          </List>
-          <List col={1}>
-            <RenderModel />
-            <PhysiscsColliderModel />
-            <ShipOrientationModel />
-          </List>
-          <Scene id="model" col={0} />
-        </EditorBody>}
+        <EntityMode secTab={secTab}/>}
 
         {tab === 'particles' && 
         <EditorBody fractions={[1, 2]}>
