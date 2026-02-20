@@ -125,8 +125,14 @@
 
 .editor, .body, .title {
   background-size:200px 200px,auto;
-   background-image: url(./assets/noise.svg), linear-gradient(to bottom in oklab, var(--top), var(--bottom));
+  background-image: url(./assets/noise.svg), linear-gradient(to bottom in oklab, var(--top), var(--bottom));
 }
+
+.body-container {
+  background-size:200px 200px,auto;
+  background-image: url(./assets/noise2.svg), linear-gradient(to bottom in oklab, var(--top), var(--bottom));
+}
+
 
 .editor {
   padding: 0px 0px 20px 0px;
@@ -233,7 +239,24 @@
 .body {
   padding: 10px 10px;
   border-bottom: 1px solid black;
-  border-radius: 0px 0px 6px 6px;
+  padding-top: 0px;
+}
+
+.body, .body-container {
+  border-radius: 0px 0px 3px 3px;
+}
+
+.body-container {
+  border-bottom: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  padding: 10px;
+  padding-top: 10px;
+  box-shadow: inset 0px 0px 10px -4px black
+}
+
+.component {
+  box-shadow: 0px 5px 12px -3px black;
 }
 
 .scene-view {

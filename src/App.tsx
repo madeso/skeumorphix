@@ -108,9 +108,9 @@ const Component = (props: {
     }}>
       {props.title}
     </Title>
-    <Body color={props.color}>
-      {expanded && props.children}
-    </Body>
+    {expanded && <Body color={props.color}>
+      {props.children}
+    </Body>}
   </div>;
 };
 
@@ -119,7 +119,7 @@ const Title = (props: {
   children?: React.ReactNode | undefined;
   expanded: boolean;
   toggleExpanded: () => void;
-}) => <div className="title" style={noiseTexture(props.color, 3, 6)}>
+}) => <div className={`title ${props.expanded ? "title-expanded" : "title-collapsed"}`} style={noiseTexture(props.color, 2, 4)}>
   <a onClick={props.toggleExpanded}>{props.expanded ? <ChevronDown/> : <ChevronRight/>}</a>
   {props.children}
 </div>;
@@ -129,8 +129,10 @@ const Body = (props: {
   title?: React.ReactNode | undefined;
   children?: React.ReactNode | undefined;
 }) => {
-  return <div className="body" style={noiseTexture(props.color, 3, 8)}>
-    {props.children}
+  return <div className="body" style={noiseTexture(props.color, 1, 3)}>
+    <div className="body-container">
+      {props.children}
+    </div>
   </div>;
 }
 const Prop = (props: {label: string; children?: React.ReactNode}) => <>
