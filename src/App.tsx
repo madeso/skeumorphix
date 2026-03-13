@@ -180,8 +180,8 @@ const NumberEdit = () => {
 }
 
 
-const FileBrowser = () => {
-  const value = "~/assets/file.ext";
+const FileBrowser = (props: {display?: string}) => {
+  const value = props.display ?? "~/assets/file.ext";
   return (
     <span className="led-number-edit">
       <span className="led-display">
@@ -254,6 +254,48 @@ const ShipOrientationModel = () => <Component color={"grape"} title={
   </Prop>
 </Component>;
 
+// temporary
+const Knob = () => {
+  return <></>;
+};
+
+const ThirdPersonModel = () => <Component color={"grape"} title={
+  <>
+    Third person
+  </>
+}>
+  <Prop label="Move and sprint speed">
+    <NumberEdit/> <NumberEdit/>
+  </Prop>
+  <Prop label="Speed change rate">
+    <NumberEdit/>
+  </Prop>
+  <Prop label="Rotation smooth time">
+    <Knob/>
+  </Prop>
+
+  <Prop label="Jump height"><NumberEdit/></Prop>
+  <Prop label="Gravity"><NumberEdit/></Prop>
+
+  <Prop label="Jump and fall timeout">
+    <NumberEdit/> <NumberEdit/>
+  </Prop>
+
+  <Prop label="Grounded offset and radius">
+    <NumberEdit/> <NumberEdit/>
+  </Prop>
+  <Prop label="Grounded layers">
+    <FileBrowser display="Ground" />
+  </Prop>
+
+  <Prop label="Camera target">
+    <FileBrowser display='Torso' />
+  </Prop>
+  <Prop label="Top and bottom clamp">
+    <NumberEdit/> <NumberEdit/>
+  </Prop>
+</Component>;
+
 const EnablePhysicsSystem = () => <Component color={"pink"} title={
   <>
     Physiscs Simulation
@@ -302,12 +344,18 @@ const listers : Lister[] = [
   },
 ]
 
-const ListerPanel = () => {
+type Entity = "spaceship" | "character";
+
+const ListerPanel = (props: {setEntity: (e: Entity) => void}) => {
   const [state, setState] = React.useState(0);
   const title = <>
     <h1>{listers[state].name}</h1>
     {listers.map((x, index) => <Button key={index} color="gray" pushed={state===index} onClick={() => setState(index)}>{x.short}</Button>)}
   </>;
+
+  const selectSpaceship = () => props.setEntity("spaceship");
+  const selectCharacter = () => props.setEntity("character");
+
   return <>
     <Component color="lime" title={title} collapsed>
       <Collapsible color='gray' title='Display'/>
@@ -319,8 +367,8 @@ const ListerPanel = () => {
 
     <Component color="grape" title="Items">
       <select className="lister-items" name="items" size={5} style={noiseTexture("blue", 3, 1)}>
-        <option>entity 2b8941ef</option>
-        <option>entity 12cd0d3a</option>
+        <option onClick={selectSpaceship}>entity 2b8941ef [Spaceship]</option>
+        <option onClick={selectCharacter}>entity 12cd0d3a [Character]</option>
         <option>entity e6a0dc45</option>
         <option>entity 36378c6f</option>
         <option>entity 9f3cbe79</option>
@@ -331,12 +379,12 @@ const ListerPanel = () => {
 
     </Component>
   </>;
-}
+};
 
 type TabName = "world" | "entity" | "particles";
 type SecTabName = "world" | "local";
 
-const EntityMode = ({secTab}: {secTab: SecTabName}) => {
+const EntityMode = ({secTab, entity}: {entity: Entity, secTab: SecTabName}) => {
   const [hovering, setHovering] = React.useState(false);
 
   const base = hovering ? 1 : 0;
@@ -362,13 +410,21 @@ const EntityMode = ({secTab}: {secTab: SecTabName}) => {
     <Scene id="model" col={base + 0} />
     <List col={base + 1}>
       <RenderModel />
-      <PhysiscsColliderModel />
-      <ShipOrientationModel />
+      {entity == 'spaceship' && <>
+        <PhysiscsColliderModel />
+        <ShipOrientationModel />
+      </>}
+      {entity == 'character' && <>
+        <ThirdPersonModel />
+        <PhysiscsColliderModel />
+      </>}
     </List>
     <List col={base + 2}>
       {secTab === 'local' && <>
-        <EnablePhysicsSystem />
-        <ShipControl />
+        {entity == 'spaceship' && <>
+          <EnablePhysicsSystem />
+          <ShipControl />
+        </>}
       </>}
       {secTab === 'world' && <>
         <Component color='red' title='Global system'>
@@ -382,6 +438,8 @@ const EntityMode = ({secTab}: {secTab: SecTabName}) => {
 function App() {
   const [tab, setTab] = React.useState<TabName>("entity");
   const [secTab, setSecTab] = React.useState<SecTabName>("world");
+  const [entity, setEntity] = React.useState<Entity>("spaceship");
+
   return (
     <>
       <Editor>
@@ -404,7 +462,7 @@ function App() {
         {tab === 'world' && 
         <EditorBody fractions={[1, 2, 1]}>
           <List col={0}>
-            <ListerPanel />
+            <ListerPanel setEntity={setEntity} />
           </List>
           <Scene id="world" col={1} />
           <List col={2}>
@@ -419,7 +477,7 @@ function App() {
         </EditorBody>}
 
         {tab === 'entity' && 
-        <EntityMode secTab={secTab}/>}
+        <EntityMode entity={entity} secTab={secTab}/>}
 
         {tab === 'particles' && 
         <EditorBody fractions={[1, 2]}>
