@@ -1,0 +1,16 @@
+.skeumorphic-knob {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #e6e6e6, #ffffff);
+  border-radius: 50%;
+  box-shadow: 6px 6px 16px #bebebe, -6px -6px 16px #ffffff;
+  user-select: none;
+  cursor: pointer;
+  position: relative;
+}
+
+.skeumorphic-knob svg {
+  display: block;
+}

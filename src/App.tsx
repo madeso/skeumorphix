@@ -1,5 +1,6 @@
 import euphoriaLogo from '/euphoria-logo.svg'
 import './App.css'
+import './Knob.css';
 import { colors, type ColorName } from './colors';
 import React from 'react';
 import { ChevronDown, ChevronRight } from './icons/icon';
@@ -255,9 +256,7 @@ const ShipOrientationModel = () => <Component color={"grape"} title={
 </Component>;
 
 // temporary
-const Knob = () => {
-  return <></>;
-};
+import { Knob } from './Knob';
 
 const ThirdPersonModel = () => <Component color={"grape"} title={
   <>
