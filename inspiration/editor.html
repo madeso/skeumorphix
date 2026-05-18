@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Skeuomorphic ECS Editor</title>
+
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top, #2a2f36, #15181c 70%);
+    color: #ddd;
+}
+
+/* ===== LAYOUT ===== */
+
+.editor {
+    display: flex;
+    height: 100vh;
+}
+
+/* ===== HIERARCHY ===== */
+
+.hierarchy {
+    width: 260px;
+    background: linear-gradient(#2a2f36, #1b1f24);
+    border-right: 1px solid #000;
+    box-shadow: inset -4px 0 8px rgba(0,0,0,0.6);
+    padding: 12px;
+}
+
+.panel-title {
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+}
+
+.tree ul {
+    list-style: none;
+    padding-left: 16px;
+    margin: 0;
+}
+
+.tree li {
+    position: relative;
+    padding: 4px 0 4px 16px;
+}
+
+.tree li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: #888;
+}
+
+.tree .open::before {
+    content: "▾";
+}
+
+.tree span {
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.tree span:hover {
+    background: #353c45;
+}
+
+.selected {
+    background: #4a5462;
+}
+
+/* ===== INSPECTOR ===== */
+
+.inspector {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+/* ===== MODULE ===== */
+
+.module {
+    margin-bottom: 20px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow:
+        0 6px 12px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.module-header {
+    padding: 8px 14px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-shadow: 0 1px 2px black;
+}
+
+.module-body {
+    padding: 14px;
+    background: linear-gradient(#2d333b, #23282e);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.6);
+}
+
+/* ===== LED ===== */
+
+.led {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3aff3a;
+    box-shadow:
+        0 0 6px #3aff3a,
+        0 0 12px #3aff3a;
+}
+
+/* ===== CONTROLS ===== */
+
+.control {
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.control input,
+.control select {
+    background: #1b1f24;
+    border: 1px solid #000;
+    color: #ddd;
+    padding: 4px 6px;
+    border-radius: 4px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.control input[type=range] {
+    flex: 1;
+}
+
+/* Toggle */
+
+.toggle {
+    width: 38px;
+    height: 18px;
+    border-radius: 10px;
+    background: #444;
+    position: relative;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.7);
+}
+
+.toggle::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background: #aaa;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: 0.2s;
+}
+
+.toggle.on {
+    background: #2e6b2e;
+}
+
+.toggle.on::after {
+    left: 22px;
+    background: #3aff3a;
+    box-shadow: 0 0 6px #3aff3a;
+}
+
+/* ===== COLOR THEMES ===== */
+
+.blue .module-header {
+    background: linear-gradient(#3a78b5, #2a5d8a);
+}
+.orange .module-header {
+    background: linear-gradient(#d17a1f, #9f5312);
+}
+.green .module-header {
+    background: linear-gradient(#5fae5f, #3e7f3e);
+}
+.purple .module-header {
+    background: linear-gradient(#7a5fae, #573e7f);
+}
+.teal .module-header {
+    background: linear-gradient(#4ea6a6, #2f6e6e);
+}
+.gray .module-header {
+    background: linear-gradient(#777, #555);
+}
+</style>
+</head>
+
+<body>
+<div class="editor">
+
+<div class="hierarchy">
+    <div class="panel-title">Hierarchy</div>
+    <div class="tree">
+        <ul>
+            <li class="open">
+                <span class="selected">Player</span>
+                <ul>
+                    <li><span>Camera</span></li>
+                    <li><span>Weapon</span></li>
+                </ul>
+            </li>
+            <li><span>Light</span></li>
+            <li><span>Environment</span></li>
+        </ul>
+    </div>
+</div>
+
+<div class="inspector">
+
+    <div class="module blue">
+        <div class="module-header">
+            Transform
+            <div class="led"></div>
+        </div>
+        <div class="module-body">
+            <div class="control">Position <input type="number" value="0"></div>
+            <div class="control">Rotation <input type="number" value="0"></div>
+            <div class="control">Scale <input type="number" value="1"></div>
+        </div>
+    </div>
+
+    <div class="module orange">
+        <div class="module-header">
+            Movement Script
+            <div class="led"></div>
+        </div>
+        <div class="module-body">
+            <div class="control">Speed <input type="range" value="50"></div>
+            <div class="control">Acceleration <input type="range" value="30"></div>
+        </div>
+    </div>
+
+    <div class="module green">
+        <div class="module-header">
+            Health Script
+            <div class="led"></div>
+        </div>
+        <div class="module-body">
+            <div class="control">Max Health <input type="number" value="100"></div>
+            <div class="control">Invincible <div class="toggle on"></div></div>
+        </div>
+    </div>
+
+    <div class="module purple">
+        <div class="module-header">
+            AI Script
+            <div class="led"></div>
+        </div>
+        <div class="module-body">
+            <div class="control">State 
+                <select>
+                    <option>Patrol</option>
+                    <option>Chase</option>
+                </select>
+            </div>
+            <div class="control">Aggression <input type="range" value="60"></div>
+        </div>
+    </div>
+
+    <div class="module teal">
+        <div class="module-header">
+            Audio Source
+            <div class="led"></div>
+        </div>
+        <div class="module-body">
+            <div class="control">Volume <input type="range" value="80"></div>
+            <div class="control">Looping <div class="toggle"></div></div>
+        </div>
+    </div>
+
+    <div class="module gray">
+        <div class="module-header">
+            Renderer
+            <div class="led"></div>
+        </div>
+        <div class="module-body">
+            <div class="control">Mesh 
+                <select>
+                    <option>CharacterModel</option>
+                </select>
+            </div>
+            <div class="control">Shadows <div class="toggle on"></div></div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Skeuomorphic Editor</title>
+<style>
+
+* { box-sizing: border-box; }
+body{
+    margin:0;
+    background:#0b0f14;
+    font-family:Segoe UI, sans-serif;
+    color:#d0d6dd;
+}
+
+/* ========================= APP FRAME ========================= */
+
+.app{
+    width:1200px;
+    margin:40px auto;
+    border-radius:6px;
+    background:#1b1f24;
+    box-shadow:
+        0 40px 60px rgba(0,0,0,.9),
+        inset 0 0 0 2px #000;
+    overflow:hidden;
+}
+
+/* Top bar */
+.topbar{
+    height:38px;
+    background:linear-gradient(#2a2f35,#1a1e22);
+    display:flex;
+    align-items:center;
+    padding:0 14px;
+    border-bottom:2px solid #000;
+}
+
+.window-controls{
+    display:flex;
+    gap:8px;
+}
+
+.dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+}
+
+.red{ background:#ff5f57; }
+.yellow{ background:#ffbd2e; }
+.green{ background:#28c840; }
+
+/* ========================= LAYOUT ========================= */
+
+.content{
+    display:flex;
+}
+
+/* ========================= HIERARCHY ========================= */
+
+.hierarchy{
+    width:250px;
+    background:
+        linear-gradient(#2d3238,#1e2227);
+    border-right:2px solid #000;
+    padding:12px;
+    box-shadow: inset -6px 0 10px rgba(0,0,0,.7);
+}
+
+.hierarchy-title{
+    font-size:14px;
+    margin-bottom:10px;
+    opacity:.7;
+}
+
+.tree div{
+    padding:6px 8px;
+    border-radius:3px;
+    margin:2px 0;
+}
+
+.tree .selected{
+    background:#3b4148;
+    box-shadow:inset 0 0 4px #000;
+}
+
+/* ========================= INSPECTOR ========================= */
+
+.inspector{
+    flex:1;
+    padding:16px;
+    background:#14181d;
+}
+
+/* ========================= SCRIPT CARD ========================= */
+
+.card{
+    border-radius:5px;
+    margin-bottom:14px;
+    overflow:hidden;
+    border:1px solid #000;
+    box-shadow:
+        0 4px 10px rgba(0,0,0,.7),
+        inset 0 0 0 1px rgba(255,255,255,.05);
+}
+
+/* Header strip */
+.card-header{
+    height:30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 10px;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.5px;
+    border-bottom:1px solid rgba(0,0,0,.6);
+}
+
+.card-body{
+    padding:12px;
+    background:rgba(0,0,0,.25);
+}
+
+/* Individual color themes */
+
+.blue .card-header{
+    background:linear-gradient(#4f88d9,#2c5da0);
+}
+
+.orange .card-header{
+    background:linear-gradient(#d98a2b,#9a4e14);
+}
+
+.green .card-header{
+    background:linear-gradient(#6dbb6d,#3c7f3c);
+}
+
+.purple .card-header{
+    background:linear-gradient(#9b6fd6,#5c3c8c);
+}
+
+.teal .card-header{
+    background:linear-gradient(#4ca3a3,#2e6c6c);
+}
+
+.gray .card-header{
+    background:linear-gradient(#6e7680,#444);
+}
+
+/* Status LEDs */
+
+.leds{
+    display:flex;
+    gap:6px;
+}
+
+.led{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    box-shadow:0 0 4px currentColor;
+}
+
+.led.green{ color:#3aff3a; background:#3aff3a; }
+.led.yellow{ color:#ffcc00; background:#ffcc00; }
+
+/* ========================= INPUT WELL ========================= */
+
+.well{
+    background:#1b1f24;
+    border:1px solid #000;
+    border-radius:3px;
+    padding:4px 6px;
+    display:inline-block;
+    min-width:50px;
+    text-align:center;
+    box-shadow:inset 0 2px 4px rgba(0,0,0,.7);
+}
+
+/* ========================= KNOB ========================= */
+
+.knob{
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 30% 30%, #777,#222 70%);
+    border:2px solid #111;
+    position:relative;
+    box-shadow:
+        inset 0 4px 6px rgba(0,0,0,.9),
+        0 6px 8px rgba(0,0,0,.8);
+}
+
+.knob::after{
+    content:"";
+    width:4px;
+    height:14px;
+    background:#eee;
+    position:absolute;
+    top:6px;
+    left:50%;
+    transform:translateX(-50%);
+    border-radius:2px;
+}
+
+/* ========================= SLIDER ========================= */
+
+.slider{
+    height:6px;
+    background:#111;
+    border-radius:3px;
+    box-shadow:inset 0 2px 4px black;
+    position:relative;
+}
+
+.slider-fill{
+    height:100%;
+    width:60%;
+    background:#ffaa00;
+    border-radius:3px;
+}
+
+/* ========================= TOGGLE ========================= */
+
+.toggle{
+    width:44px;
+    height:18px;
+    border-radius:20px;
+    background:#333;
+    position:relative;
+    box-shadow:inset 0 2px 4px black;
+}
+
+.toggle::after{
+    content:"";
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background:#9cff6a;
+    position:absolute;
+    top:1px;
+    left:25px;
+}
+
+/* ========================= GRID LAYOUT ========================= */
+
+.row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:6px 0;
+}
+
+.split{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<div class="topbar">
+    <div class="window-controls">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+    </div>
+</div>
+
+<div class="content">
+
+<!-- HIERARCHY -->
+<div class="hierarchy">
+    <div class="hierarchy-title">Hierarchy</div>
+    <div class="tree">
+        <div class="selected">Player</div>
+        <div>Camera</div>
+        <div>Light</div>
+    </div>
+</div>
+
+<!-- INSPECTOR -->
+<div class="inspector">
+
+<div class="card blue">
+    <div class="card-header">
+        Transform
+        <div class="leds">
+            <div class="led green"></div>
+            <div class="led yellow"></div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">Position <div class="well">0.00</div></div>
+        <div class="row">Rotation <div class="well">0.00</div></div>
+        <div class="row">Scale <div class="well">1.00</div></div>
+    </div>
+</div>
+
+<div class="card orange">
+    <div class="card-header">Movement Script
+        <div class="leds"><div class="led green"></div></div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="knob"></div>
+            Speed
+            <div class="slider" style="flex:1"><div class="slider-fill"></div></div>
+        </div>
+    </div>
+</div>
+
+<div class="card green">
+    <div class="card-header">Health Script</div>
+    <div class="card-body">
+        <div class="row">
+            Max Health <div class="well">100</div>
+            <div class="toggle"></div>
+        </div>
+    </div>
+</div>
+
+<div class="split">
+
+<div class="card purple">
+    <div class="card-header">AI Script</div>
+    <div class="card-body">
+        <div class="row">
+            <div class="knob"></div>
+            State: Patrol
+        </div>
+    </div>
+</div>
+
+<div class="card teal">
+    <div class="card-header">Audio Source</div>
+    <div class="card-body">
+        <div class="row">
+            Volume
+            <div class="slider" style="flex:1">
+                <div class="slider-fill" style="width:80%;background:#00c8ff"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ECS Rack Editor Mockup</title>
+
+<style>
+:root {
+    --bg: #1b1d22;
+    --panel: #24272e;
+    --panel-dark: #1f2228;
+    --border: #111317;
+    --text: #d6d9df;
+    --muted: #8b9099;
+
+    --blue: #3b82f6;
+    --orange: #f59e0b;
+    --green: #22c55e;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+}
+
+/* GLOBAL */
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* HIERARCHY PANEL */
+
+.hierarchy {
+    width: 260px;
+    background: var(--panel-dark);
+    border-right: 2px solid var(--border);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    padding: 12px 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: linear-gradient(#2b2f36, #23262c);
+    border-bottom: 1px solid var(--border);
+}
+
+.tree {
+    padding: 10px 8px;
+    font-size: 14px;
+}
+
+.tree ul {
+    list-style: none;
+    padding-left: 18px;
+    margin: 4px 0;
+}
+
+.tree li {
+    margin: 6px 0;
+    cursor: pointer;
+    position: relative;
+}
+
+.tree li::before {
+    content: "▸";
+    position: absolute;
+    left: -14px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.tree li.open::before {
+    content: "▾";
+}
+
+.tree .node {
+    padding: 4px 6px;
+    border-radius: 4px;
+}
+
+.tree .node:hover {
+    background: #2e323a;
+}
+
+.tree .selected {
+    background: #374151;
+}
+
+/* INSPECTOR */
+
+.inspector {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.node-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+/* MODULE */
+
+.module {
+    background: var(--panel);
+    border-radius: 6px;
+    margin-bottom: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+
+.module-header {
+    padding: 10px 14px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.module-body {
+    padding: 14px;
+}
+
+.led {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px #22c55e;
+}
+
+/* FIELD */
+
+.field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.field label {
+    color: var(--muted);
+}
+
+input[type="range"] {
+    width: 140px;
+}
+
+input[type="number"],
+select {
+    background: #1a1d22;
+    border: 1px solid #333842;
+    color: var(--text);
+    padding: 4px 6px;
+    border-radius: 4px;
+    width: 70px;
+}
+
+.toggle {
+    width: 34px;
+    height: 18px;
+    background: #444;
+    border-radius: 20px;
+    position: relative;
+}
+
+.toggle::after {
+    content: "";
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+/* COLOR VARIANTS */
+
+.blue { background: linear-gradient(to right, #2563eb, #1e3a8a); }
+.orange { background: linear-gradient(to right, #f59e0b, #7c2d12); }
+.green { background: linear-gradient(to right, #22c55e, #14532d); }
+.purple { background: linear-gradient(to right, #a855f7, #4c1d95); }
+.cyan { background: linear-gradient(to right, #06b6d4, #164e63); }
+
+</style>
+</head>
+
+<body>
+<div class="app">
+
+    <!-- HIERARCHY -->
+    <div class="hierarchy">
+        <div class="panel-header">Hierarchy</div>
+        <div class="tree">
+            <ul>
+                <li class="open">
+                    <div class="node selected">Player</div>
+                    <ul>
+                        <li><div class="node">Camera</div></li>
+                        <li><div class="node">Weapon</div></li>
+                    </ul>
+                </li>
+                <li><div class="node">Light</div></li>
+                <li><div class="node">Environment</div></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- INSPECTOR -->
+    <div class="inspector">
+        <div class="node-title">Player</div>
+
+        <!-- Transform -->
+        <div class="module">
+            <div class="module-header blue">
+                Transform
+                <div class="led"></div>
+            </div>
+            <div class="module-body">
+                <div class="field">
+                    <label>Position X</label>
+                    <input type="number" value="0.0">
+                </div>
+                <div class="field">
+                    <label>Position Y</label>
+                    <input type="number" value="1.0">
+                </div>
+                <div class="field">
+                    <label>Position Z</label>
+                    <input type="number" value="0.0">
+                </div>
+            </div>
+        </div>
+
+        <!-- Movement -->
+        <div class="module">
+            <div class="module-header orange">
+                Movement Script
+                <div class="led"></div>
+            </div>
+            <div class="module-body">
+                <div class="field">
+                    <label>Speed</label>
+                    <input type="range" min="0" max="100" value="60">
+                </div>
+                <div class="field">
+                    <label>Acceleration</label>
+                    <input type="range" min="0" max="10" value="3">
+                </div>
+            </div>
+        </div>
+
+        <!-- Health -->
+        <div class="module">
+            <div class="module-header green">
+                Health Script
+                <div class="led"></div>
+            </div>
+            <div class="module-body">
+                <div class="field">
+                    <label>Max Health</label>
+                    <input type="number" value="100">
+                </div>
+                <div class="field">
+                    <label>Invincible</label>
+                    <div class="toggle"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI -->
+        <div class="module">
+            <div class="module-header purple">
+                AI Script
+                <div class="led"></div>
+            </div>
+            <div class="module-body">
+                <div class="field">
+                    <label>State</label>
+                    <select>
+                        <option>Idle</option>
+                        <option selected>Patrol</option>
+                        <option>Chase</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Chase Range</label>
+                    <input type="number" value="20">
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio -->
+        <div class="module">
+            <div class="module-header cyan">
+                Audio Source
+                <div class="led"></div>
+            </div>
+            <div class="module-body">
+                <div class="field">
+                    <label>Volume</label>
+                    <input type="range" min="0" max="1" step="0.1" value="1">
+                </div>
+                <div class="field">
+                    <label>Looping</label>
+                    <div class="toggle"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

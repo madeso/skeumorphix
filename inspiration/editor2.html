@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Skeuomorphic ECS Rack Editor</title>
+
+<style>
+/* ================= GLOBAL ================= */
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #111;
+    color: #ddd;
+    overflow: hidden;
+}
+
+/* Grain overlay */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        url("data:image/svg+xml,\
+<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>\
+<filter id='n'>\
+<feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/>\
+</filter>\
+<rect width='100%' height='100%' filter='url(%23n)' opacity='0.05'/>\
+</svg>");
+}
+
+/* ================= LAYOUT ================= */
+
+.editor {
+    display: flex;
+    height: 100vh;
+}
+
+/* ================= HIERARCHY ================= */
+
+.hierarchy {
+    width: 260px;
+    background: linear-gradient(#2b2f34, #1a1d21);
+    border-right: 2px solid #000;
+    box-shadow: inset -6px 0 12px rgba(0,0,0,0.8);
+    padding: 14px;
+}
+
+.panel-title {
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+    color: #aaa;
+}
+
+.tree ul {
+    list-style: none;
+    padding-left: 18px;
+    position: relative;
+}
+
+.tree li {
+    margin: 6px 0;
+    position: relative;
+}
+
+.tree li::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #333;
+}
+
+.tree span {
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.tree .selected {
+    background: #444c58;
+    box-shadow: inset 0 0 4px #000;
+}
+
+/* ================= INSPECTOR ================= */
+
+.inspector {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    background: radial-gradient(circle at top, #2a2e34, #14171b 70%);
+}
+
+/* ================= MODULE ================= */
+
+.module {
+    position: relative;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    background: linear-gradient(#3a3f46, #2a2e34);
+    box-shadow:
+        0 10px 20px rgba(0,0,0,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    border: 1px solid #111;
+    padding-bottom: 20px;
+}
+
+/* screws */
+.module::before,
+.module::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #999, #222);
+    box-shadow: inset 0 1px 2px black;
+}
+.module::before { top: 8px; left: 8px; }
+.module::after  { top: 8px; right: 8px; }
+
+.module-header {
+    padding: 10px 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid rgba(0,0,0,0.6);
+}
+
+/* Unique color bars */
+.blue .module-header   { background: linear-gradient(#3b7bd9, #1f4f91); }
+.orange .module-header { background: linear-gradient(#d98a2b, #8c4c10); }
+.green .module-header  { background: linear-gradient(#5fbf5f, #2f7f2f); }
+.purple .module-header { background: linear-gradient(#9b6fd6, #5b3b8c); }
+
+.module-body {
+    padding: 18px;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+/* ================= LED ================= */
+
+.led {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #3aff3a;
+    box-shadow:
+        0 0 6px #3aff3a,
+        0 0 12px #3aff3a;
+    position: absolute;
+    top: 12px;
+    right: 16px;
+}
+
+/* ================= KNOB ================= */
+
+.knob {
+    width: 70px;
+    text-align: center;
+}
+
+.knob-dial {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 8px auto;
+    background:
+        radial-gradient(circle at 30% 30%, #777, #222 70%);
+    border: 3px solid #111;
+    box-shadow:
+        inset 0 4px 6px rgba(0,0,0,0.8),
+        0 4px 6px rgba(0,0,0,0.8);
+    position: relative;
+}
+
+.knob-dial::after {
+    content: "";
+    position: absolute;
+    width: 4px;
+    height: 20px;
+    background: #eee;
+    left: 50%;
+    top: 8px;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.knob label {
+    font-size: 12px;
+    color: #aaa;
+}
+
+/* ================= SLIDER ================= */
+
+.slider {
+    width: 150px;
+}
+
+.slider input[type=range] {
+    width: 100%;
+}
+
+/* ================= TOGGLE ================= */
+
+.toggle {
+    width: 60px;
+    height: 24px;
+    border-radius: 20px;
+    background: #333;
+    box-shadow: inset 0 3px 6px black;
+    position: relative;
+}
+
+.toggle::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ccc, #444);
+    top: 2px;
+    left: 2px;
+}
+
+.toggle.on {
+    background: #2f6f2f;
+}
+
+.toggle.on::after {
+    left: 38px;
+    background: radial-gradient(circle at 30% 30%, #8fff8f, #1a5f1a);
+}
+
+/* ================= DIFFERENT COMPONENT LOOKS ================= */
+
+.movement .module-body {
+    justify-content: space-between;
+}
+
+.health .module-body {
+    flex-direction: column;
+}
+
+.ai .module-body {
+    justify-content: space-around;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="editor">
+
+<!-- HIERARCHY -->
+<div class="hierarchy">
+    <div class="panel-title">Hierarchy</div>
+    <div class="tree">
+        <ul>
+            <li><span class="selected">Player</span>
+                <ul>
+                    <li><span>Camera</span></li>
+                    <li><span>Weapon</span></li>
+                </ul>
+            </li>
+            <li><span>Light</span></li>
+            <li><span>Environment</span></li>
+        </ul>
+    </div>
+</div>
+
+<!-- INSPECTOR -->
+<div class="inspector">
+
+    <!-- Transform -->
+    <div class="module blue">
+        <div class="module-header">Transform</div>
+        <div class="led"></div>
+        <div class="module-body">
+            <div class="knob">
+                <div class="knob-dial"></div>
+                <label>Position</label>
+            </div>
+            <div class="knob">
+                <div class="knob-dial"></div>
+                <label>Rotation</label>
+            </div>
+            <div class="knob">
+                <div class="knob-dial"></div>
+                <label>Scale</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movement -->
+    <div class="module orange movement">
+        <div class="module-header">Movement</div>
+        <div class="led"></div>
+        <div class="module-body">
+            <div class="slider">
+                <label>Speed</label>
+                <input type="range">
+            </div>
+            <div class="slider">
+                <label>Acceleration</label>
+                <input type="range">
+            </div>
+        </div>
+    </div>
+
+    <!-- Health -->
+    <div class="module green health">
+        <div class="module-header">Health</div>
+        <div class="led"></div>
+        <div class="module-body">
+            <div>Max HP: 100</div>
+            <div class="toggle on"></div>
+        </div>
+    </div>
+
+    <!-- AI -->
+    <div class="module purple ai">
+        <div class="module-header">AI</div>
+        <div class="led"></div>
+        <div class="module-body">
+            <div class="knob">
+                <div class="knob-dial"></div>
+                <label>Aggression</label>
+            </div>
+            <div class="knob">
+                <div class="knob-dial"></div>
+                <label>Awareness</label>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>
